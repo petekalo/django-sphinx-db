@@ -6,6 +6,16 @@ from django.db.backends.mysql.creation import DatabaseCreation as MySQLDatabaseC
 class SphinxOperations(MySQLDatabaseOperations):
     compiler_module = "django_sphinx_db.backend.sphinx.compiler"
 
+    def quote_name(self, name):
+        # TODO: remove this function altogether when no longer needed.
+        # In one of the releases Sphinx fails with "SELECT `id`" - alike clauses
+        # http://sphinxsearch.com/bugs/view.php?id=1487
+        if name == 'id':
+            return name
+        if name.startswith("`") and name.endswith("`"):
+            return name # Quoting once is enough.
+        return "`%s`" % name
+
     def fulltext_search_sql(self, field_name):
         return 'MATCH (%s)'
 
