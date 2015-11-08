@@ -1,7 +1,7 @@
 from django.db.models.sql import compiler
 from django.db.models.sql.where import WhereNode
 from django.db.models.sql.where import EmptyShortCircuit, EmptyResultSet
-from django.db.models.sql.expressions import SQLEvaluator
+#from django.db.models.sql.expressions import SQLEvaluator
 
 
 class SphinxWhereNode(WhereNode):
@@ -102,8 +102,9 @@ class SQLUpdateCompiler(compiler.SQLUpdateCompiler, SphinxQLCompiler):
             else:
                 placeholder = '%s'
 
-            if hasattr(val, 'evaluate'):
-                val = SQLEvaluator(val, self.query, allow_joins=False)
+            # deprecated #14030
+            #if hasattr(val, 'evaluate'):
+            #    val = SQLEvaluator(val, self.query, allow_joins=False)
             name = field.column
             if hasattr(val, 'as_sql'):
                 sql, params = val.as_sql(qn, self.connection)
@@ -123,6 +124,6 @@ class SQLUpdateCompiler(compiler.SQLUpdateCompiler, SphinxQLCompiler):
 class SQLAggregateCompiler(compiler.SQLAggregateCompiler, SphinxQLCompiler):
     pass
 
-
-class SQLDateCompiler(compiler.SQLDateCompiler, SphinxQLCompiler):
-    pass
+# not in Django 1.8.6:
+#class SQLDateCompiler(compiler.SQLDateCompiler, SphinxQLCompiler):
+    #pass
