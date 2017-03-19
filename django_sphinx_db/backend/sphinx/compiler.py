@@ -1,6 +1,6 @@
 from django.db.models.sql import compiler
 from django.db.models.sql.where import WhereNode
-from django.db.models.sql.where import EmptyShortCircuit, EmptyResultSet
+from django.db.models.sql.where import EmptyResultSet
 #from django.db.models.sql.expressions import SQLEvaluator
 
 
@@ -30,8 +30,11 @@ class SphinxWhereNode(WhereNode):
             if hasattr(lvalue, 'process'):
                 try:
                     lvalue, params = lvalue.process(lookup_type, params_or_value, connection)
-                except EmptyShortCircuit:
-                    raise EmptyResultSet
+                except:
+                    raise
+# note EmptyShortCircuit was removed in 1.9, will leave a raise:
+#                except EmptyShortCircuit:
+#                    raise EmptyResultSet
             if isinstance(lvalue, tuple):
                 # A direct database column lookup.
                 field_sql = self.sql_for_columns(lvalue, qn, connection)
