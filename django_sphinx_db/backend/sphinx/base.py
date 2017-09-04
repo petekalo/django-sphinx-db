@@ -1,6 +1,12 @@
+from django.db.backends.mysql.base import *
 from django.db.backends.mysql.base import DatabaseWrapper as MySQLDatabaseWrapper
 from django.db.backends.mysql.base import DatabaseOperations as MySQLDatabaseOperations
 from django.db.backends.mysql.creation import DatabaseCreation as MySQLDatabaseCreation
+
+
+# import features class from sphinx backend module:
+from .features import DatabaseFeatures # isort:skip
+from .introspection import DatabaseIntrospection
 
 
 class SphinxOperations(MySQLDatabaseOperations):
@@ -37,6 +43,9 @@ class SphinxCreation(MySQLDatabaseCreation):
 
 
 class DatabaseWrapper(MySQLDatabaseWrapper):
+    vendor = 'sphinx'
+    display_name = 'sphinx'
+    features_class = DatabaseFeatures
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
         self.ops = SphinxOperations(self)
@@ -49,4 +58,8 @@ class DatabaseWrapper(MySQLDatabaseWrapper):
         # transactions ARE. Therefore, we can just set this to True, and Django will
         # use transactions for clearing data between tests when all OTHER backends
         # support it.
-        self.features.supports_transactions = True
+        #
+        # deprecated in Django 1.10
+        #self.features.supports_transactions = True
+        self.features = DatabaseFeatures(self)
+        self.introspection = DatabaseIntrospection(self)
