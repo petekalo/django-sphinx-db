@@ -7,6 +7,7 @@ from django.db.backends.mysql.creation import DatabaseCreation as MySQLDatabaseC
 # import features class from sphinx backend module:
 from .features import DatabaseFeatures # isort:skip
 from .introspection import DatabaseIntrospection
+from .validation import DatabaseValidation
 
 
 class SphinxOperations(MySQLDatabaseOperations):
@@ -63,3 +64,4 @@ class DatabaseWrapper(MySQLDatabaseWrapper):
         #self.features.supports_transactions = True
         self.features = DatabaseFeatures(self)
         self.introspection = DatabaseIntrospection(self)
+        self.validation = DatabaseValidation(self)
