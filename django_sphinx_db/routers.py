@@ -18,3 +18,8 @@ class SphinxRouter(object):
     def allow_relation(self, obj1, obj2, **kwargs):
         # Allow all relations...
         return True
+
+    def allow_migrate(self, db, app_label, model_name=None, model=None):
+        dbname = getattr(settings, 'SPHINX_DATABASE_NAME', 'sphinx')
+        if db == dbname:
+            return False
